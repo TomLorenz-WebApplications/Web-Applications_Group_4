@@ -291,6 +291,17 @@ function cloneObject(obj) {
     }
     return clone;
 }
+function isNonEmptyString(x) {
+    return typeof (x) === "string" && x.trim() !== "";
+}
+/**
+ * Return the next year value (e.g. if now is 2013 the function will return 2014)
+ * @return {number}  the integer representing the next year value
+ */
+function nextYear() {
+    var date = new Date();
+    return (date.getFullYear() + 1);
+}
 
-export { fillSelectWithOptions, createListFromMap, createMultipleChoiceWidget,
+export { nextYear, isNonEmptyString, fillSelectWithOptions, createListFromMap, createMultipleChoiceWidget,
     cloneObject };
