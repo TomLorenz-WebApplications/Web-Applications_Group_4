@@ -7,7 +7,7 @@ import {
   from "../../lib/errorTypes.js";
 
 import Actor from "./Actor.js";
-
+import Director from "./Director.js";
 
 
 //Class movie
@@ -16,7 +16,7 @@ class Movie {
     this.movieID = mv.movieID;
     this.title = mv.title;
     this.releaseDate = mv.releaseDate;
-
+    this.director = mv.director;
     if (mv.actors) {
       // cast to number array
       var result = mv.actors.map(function (x) {
@@ -25,7 +25,7 @@ class Movie {
       this.actors = result;
       console.log("this.actors:", this.actors);
     }
-    console.log("Movie Constr (ID, title, Date, dir, act):", this.movieID, this.title, this.releaseDate, this.actors);
+    console.log("Movie Constr (ID, title, Date, dir, act):", this.movieID, this.title, this.releaseDate, this.director, this.actors);
   }
 
   get movieID() {
@@ -134,6 +134,46 @@ class Movie {
     }
   }
 
+  get director() {
+    return this._director;
+  }
+
+  set director(directorID) {
+    console.log(directorID);
+    var validationResult = Movie.checkDirector(directorID);
+    if (validationResult instanceof NoConstraintViolation) {
+      this._director = directorID;
+    } else {
+      throw validationResult;
+    }
+  }
+
+  static checkDirector2(directorID) {
+    var validationResult = null;
+    var id = Number(directorID);
+    if (typeof (id) != "number" || id == "" || id < 1 || isNaN(id)) {
+      return new RangeConstraintViolation("directorID must be a positive Integer!");
+    } else {
+      if (Director.instances[directorID]) {
+        return new UniquenessConstraintViolation("directorID already existent!");
+      } else {
+        return new NoConstraintViolation();
+      }
+    }
+  }
+
+  static checkDirector(directorID) {
+    console.log("checkDirector");
+    var validationResult = null;
+    if (directorID) {
+      validationResult = new NoConstraintViolation();  // optional
+    } else {
+      // invoke foreign key constraint check
+      validationResult = new MandatoryValueConstraintViolation("a director is needed");
+      //validationResult = new NoConstraintViolation();
+    }
+    return validationResult;
+  }
 
   get actors() {
     return this._actors;
