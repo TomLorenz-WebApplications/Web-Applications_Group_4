@@ -99,13 +99,15 @@ document.getElementById("update")
     updateFormEl.reset();
   });
 selectUpdateDirectorEl.addEventListener("change", handleDirectorSelectChangeEvent);
+
+selectUpdateDirectorEl.addEventListener("change", handleDirectorSelectChangeEvent);
 updateFormEl.name.addEventListener("input", function () {
-  updateFormEl.name.setCustomValidity(
-    Director.checkName( updateFormEl.name.value).message);
+    updateFormEl.name.setCustomValidity(
+        Director.checkName( updateFormEl.name.value).message);
 });
 updateFormEl.directorID.addEventListener("input", function () {
-  updateFormEl.directorID.setCustomValidity(
-    Director.checkName( updateFormEl.directorID.value).message);
+    updateFormEl.directorID.setCustomValidity(
+        Director.checkDirectorID( updateFormEl.directorID.value).message);
 });
 
 // handle Save button click events
@@ -117,9 +119,6 @@ updateFormEl["commit"].addEventListener("click", function () {
       _name: updateFormEl.name.value
   }
   // save the input data only if all of the form fields are valid
-  updateFormEl.name.setCustomValidity( Director.checkName( slots.name).message);
-  updateFormEl.directorID.setCustomValidity( Director.checkDirectorID( slots.name).message);
-  console.log(slots);
   // check all property constraints
   // save the input data only if all of the form fields are valid
   if (selectUpdateDirectorEl.checkValidity() && updateFormEl.checkValidity()) {
