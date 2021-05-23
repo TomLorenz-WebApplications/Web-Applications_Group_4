@@ -5,16 +5,16 @@
 /***************************************************************
  Import classes, datatypes and utility procedures
  ***************************************************************/
-import Actor from "../m/Actor.js";
-import Director from "../m/Director.js";
+
+import Person from "../m/Person.js";
 import Movie from "../m/Movie.js";
 import { fillSelectWithOptions } from "../../lib/util.js";
 
 /***************************************************************
  Load data
  ***************************************************************/
-Actor.retrieveAll();
-Director.retrieveAll();
+
+Person.getAllPersons();
 Movie.getAllMovies();
 
 /***************************************************************
@@ -33,8 +33,8 @@ for (let frm of document.querySelectorAll("section > form")) {
 }
 // save data when leaving the page
 window.addEventListener("beforeunload", function () {
-  Director.saveAll();
-  Movie.saveAll();
+    Person.saveAll();
+    Movie.saveAll();
 });
 
 /**********************************************
@@ -45,10 +45,10 @@ document.getElementById("retrieveAll")
     const tableBodyEl = document
       .querySelector("section#Director-R > table > tbody");
     tableBodyEl.innerHTML = "";
-    for (const key of Object.keys(Director.instances)) {
-      const director = Director.instances[key];
+    for (const key of Object.keys(Person.instances)) {
+      const director = Person.instances[key];
       const row = tableBodyEl.insertRow();
-      row.insertCell().textContent = director.directorID;
+      row.insertCell().textContent = director.personID;
       row.insertCell().textContent = director.name;
     }
     document.getElementById("Director-M").style.display = "none";
@@ -68,20 +68,20 @@ document.getElementById("create")
 // set up event handlers for responsive constraint validation
 createFormEl.name.addEventListener("input", function () {
   createFormEl.name.setCustomValidity(
-    Director.checkName( createFormEl.name.value).message);
+      Person.checkName( createFormEl.name.value).message);
 });
 // handle Save button click events
 createFormEl["commit"].addEventListener("click", function () {
   const slots = {
-    name: createFormEl.name.value,
-    id: createFormEl.directorID.value
+      personID: createFormEl.directorID.value,
+      name: createFormEl.name.value
   };
   // check all input fields and show error messages
-  createFormEl.name.setCustomValidity( Director.checkNameAsIdRef( slots.name).message);
-  createFormEl.directorID.setCustomValidity( Director.checkDirectorID( slots.id).message);
+  createFormEl.name.setCustomValidity( Person.checkName( slots.name).message);
+  createFormEl.directorID.setCustomValidity( Person.checkPersonID( slots.personID).message);
   /* SIMPLIFIED CODE: no before-submit validation of name */
   // save the input data only if all form fields are valid
-  if (createFormEl.checkValidity()) Director.add( slots);
+  if (createFormEl.checkValidity()) Person.addNewPerson( slots);
 });
 
 /**********************************************
@@ -94,8 +94,8 @@ document.getElementById("update")
     document.getElementById("Director-M").style.display = "none";
     document.getElementById("Director-U").style.display = "block";
     // set up the director selection list
-    fillSelectWithOptions( selectUpdateDirectorEl, Director.instances,
-      "name");
+      fillSelectWithOptions( selectUpdateDirectorEl, Person.instances,
+          "personID", {displayProp:"name"});
     updateFormEl.reset();
   });
 selectUpdateDirectorEl.addEventListener("change", handleDirectorSelectChangeEvent);
@@ -103,11 +103,11 @@ selectUpdateDirectorEl.addEventListener("change", handleDirectorSelectChangeEven
 selectUpdateDirectorEl.addEventListener("change", handleDirectorSelectChangeEvent);
 updateFormEl.name.addEventListener("input", function () {
     updateFormEl.name.setCustomValidity(
-        Director.checkName( updateFormEl.name.value).message);
+        Person.checkName( updateFormEl.name.value).message);
 });
 updateFormEl.directorID.addEventListener("input", function () {
     updateFormEl.directorID.setCustomValidity(
-        Director.checkDirectorID( updateFormEl.directorID.value).message);
+        Person.checkPersonID( updateFormEl.directorID.value).message);
 });
 
 // handle Save button click events
@@ -115,14 +115,14 @@ updateFormEl["commit"].addEventListener("click", function () {
   const directorIdRef = updateFormEl.directorID.value;
   if (!directorIdRef) return;
   const slots = {
-      _directorID: Number(updateFormEl.directorID.value),
-      _name: updateFormEl.name.value
+      personID: Number(updateFormEl.directorID.value),
+      name: updateFormEl.name.value
   }
   // save the input data only if all of the form fields are valid
   // check all property constraints
   // save the input data only if all of the form fields are valid
   if (selectUpdateDirectorEl.checkValidity() && updateFormEl.checkValidity()) {
-      Director.update(slots);
+      Person.updatePerson(slots);
       // update the director selection list's option element
       selectUpdateDirectorEl.options[selectUpdateDirectorEl.selectedIndex].text = slots.name;
   }
@@ -132,17 +132,16 @@ updateFormEl["commit"].addEventListener("click", function () {
  * when a director is selected, populate the form with the data of the selected director
  */
 function handleDirectorSelectChangeEvent() {
-  var keyvalue = "", dir = null;
-  keyvalue = updateFormEl.selectDirector.value;
-  for(const key of Object.keys(Director.instances)){
-      if(Director.instances[key].name === keyvalue){
-          updateFormEl.reset();
-          dir = Director.instances[key];
-          console.log(dir);
-          updateFormEl.directorID.value = dir.directorID;
+  var key = "", dir = null,
+  key = updateFormEl.selectDirector.value;
+      if(key){
+          dir = Person.instances[key];
+          updateFormEl.directorID.value = dir.personID;
           updateFormEl.name.value = dir.name;
-        }
-  }
+        }else {
+          updateFormEl.reset();
+      }
+
 }
 
 
@@ -156,8 +155,8 @@ document.getElementById("destroy")
     document.getElementById("Director-M").style.display = "none";
     document.getElementById("Director-D").style.display = "block";
     // set up the director selection list
-    fillSelectWithOptions( selectDeleteDirectorEl, Director.instances,
-      "directorID", {displayProp:"name"});
+    fillSelectWithOptions( selectDeleteDirectorEl, Person.instances,
+      "personID", {displayProp:"name"});
     deleteFormEl.reset();
   });
 // handle Delete button click events
@@ -174,7 +173,7 @@ deleteFormEl["commit"].addEventListener("click", function () {
           }
       }
       if(!isAssigned){
-          Director.destroy(directorIdRef);
+          Person.deletePerson(directorIdRef);
           console.log("destroyed Director")
       }
   }

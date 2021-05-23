@@ -1,44 +1,43 @@
-import Actor from "../m/Actor.js";
+
 import Movie from "../m/Movie.js";
-import Director from "../m/Director.js";
+import Person from "../m/Person.js";
 
 // generate test data
 function generateTestData(){
     try{
-        Director.instances["1"] = new Director({
-            id:1,
+        Person.instances["1"] = new Person({
+            personID:1,
             name: "Stephen Frears"
         });
-        Director.instances["2"] = new Director({
-            id:2,
+        Person.instances["2"] = new Person({
+            personID:2,
             name: "George Lucas"
         });
-        Director.instances["3"] = new Director({
-            id:3,
+        Person.instances["3"] = new Person({
+            personID:3,
             name: "Quentin Tarantino"
         });
-        Director.saveAll();
-        Actor.instances["5"] = new Actor({
-            id:5,
+        Person.instances["5"] = new Person({
+            personID:5,
             name: "Uma Thurman"
         });
-        Actor.instances["6"] = new Actor({
-            id:6,
+        Person.instances["6"] = new Person({
+            personID:6,
             name: "John Travolta"
         });
-        Actor.instances["7"] = new Actor({
-            id:7 ,
+        Person.instances["7"] = new Person({
+            personID:7 ,
             name: "Ewan McGregor"
         });
-        Actor.instances["8"] = new Actor({
-            id:8 ,
+        Person.instances["8"] = new Person({
+            personID:8 ,
             name: "Natalie Portman"
         });
-        Actor.instances["9"] = new Actor({
-            id:9 ,
+        Person.instances["9"] = new Person({
+            personID:9 ,
             name: "Keanu Reeves"
         });
-        Actor.saveAll();
+        Person.saveAll();
         Movie.instances["1"] = new Movie({
             movieID:1,
             title: "Pulp Fiction",
@@ -70,10 +69,8 @@ function generateTestData(){
 function clearData() {
     if (confirm( "Do you really want to delete the entire database?")) {
         try {
-            Actor.instances = {};
-            localStorage["actors"] = "{}";
-            Director.instances = {};
-            localStorage["directors"] = "{}";
+            Person.instances = {};
+            localStorage["persons"] = "{}";
             Movie.instances = {};
             localStorage["movies"] = "{}";
             console.log("All data cleared.");

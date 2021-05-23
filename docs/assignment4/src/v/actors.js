@@ -1,8 +1,7 @@
 /***************************************************************
  Import classes, datatypes and utility procedures
  ***************************************************************/
-import Actor from "../m/Actor.js";
-import Director from "../m/Director.js";
+import Person from "../m/Person.js";
 import Movie from "../m/Movie.js";
 
 import { fillSelectWithOptions } from "../../lib/util.js";
@@ -10,8 +9,8 @@ import { fillSelectWithOptions } from "../../lib/util.js";
 /***************************************************************
  Load data
  ***************************************************************/
-Actor.retrieveAll();
-Director.retrieveAll();
+
+Person.getAllPersons();
 Movie.getAllMovies();
 
 /***************************************************************
@@ -29,7 +28,7 @@ for (let frm of document.querySelectorAll("section > form")) {
 }
 // save data when leaving the page
 window.addEventListener("beforeunload", function () {
-  Actor.saveAll();
+  Person.saveAll();
   // also save books because books may be deleted when an actor is deleted
   Movie.saveAll();
 });
@@ -41,13 +40,13 @@ document.getElementById("retrieveAll")
   .addEventListener("click", function () {
     const tableBodyEl = document.querySelector("section#Actor-R > table > tbody");
     tableBodyEl.innerHTML = "";
-    console.log(Actor.instances);
-    for (let key of Object.keys(Actor.instances)) {
-      const actor = Actor.instances[key];
+    console.log(Person.instances);
+    for (let key of Object.keys(Person.instances)) {
+      const actor = Person.instances[key];
       const row = tableBodyEl.insertRow();
       console.log(actor);
       row.insertCell().textContent = actor.name;
-      row.insertCell().textContent = actor.actorID;
+      row.insertCell().textContent = actor.personID;
     }
     document.getElementById("Actor-M").style.display = "none";
     document.getElementById("Actor-R").style.display = "block";
@@ -66,23 +65,23 @@ document.getElementById("create")
 // set up event handlers for responsive constraint validation
 createFormEl.actorID.addEventListener("input", function () {
   createFormEl.actorID.setCustomValidity(
-    Actor.checkActorID( createFormEl.actorID.value).message);
+      Person.checkPersonID( createFormEl.actorID.value).message);
 });
 
 // handle Save button click events
 createFormEl["commit"].addEventListener("click", function () {
   const slots = {
-    id: createFormEl.actorID.value,
+    personID: createFormEl.actorID.value,
     name: createFormEl.name.value
   };
   console.log(slots);
   // check all input fields and show error messages
   createFormEl.actorID.setCustomValidity(
-    Actor.checkActorID( slots.id).message);
-  createFormEl.name.setCustomValidity(Actor.checkName( slots.name).message);
+      Person.checkPersonID( slots.personID).message);
+  createFormEl.name.setCustomValidity(Person.checkName( slots.name).message);
   /* SIMPLIFIED CODE: no before-submit validation of name */
   // save the input data only if all form fields are valid
-  if (createFormEl.checkValidity()) Actor.add( slots);
+  if (createFormEl.checkValidity()) Person.addNewPerson( slots);
 });
 
 /**********************************************
@@ -95,15 +94,15 @@ document.getElementById("update")
     document.getElementById("Actor-M").style.display = "none";
     document.getElementById("Actor-U").style.display = "block";
     // set up the actor selection list
-    fillSelectWithOptions( selectUpdateActorEl, Actor.instances,
-      "actorID", {displayProp:"name"});
+    fillSelectWithOptions( selectUpdateActorEl, Person.instances,
+      "personID", {displayProp:"name"});
     updateFormEl.reset();
   });
 selectUpdateActorEl.addEventListener("change", handleActorSelectChangeEvent);
 
 updateFormEl.name.addEventListener("input", function () {
   createFormEl.name.setCustomValidity(
-    Actor.checkActorID( createFormEl.name.value).message);
+      Person.checkPersonID( createFormEl.name.value).message);
 });
 
 // handle Save button click events
@@ -111,14 +110,14 @@ updateFormEl["commit"].addEventListener("click", function () {
   const actorIdRef = selectUpdateActorEl.value;
   if (!actorIdRef) return;
   const slots = {
-    actorID: updateFormEl.actorID.value,
+    personID: updateFormEl.actorID.value,
     name: updateFormEl.name.value
   }
 
-  updateFormEl.name.setCustomValidity(Actor.checkName( slots.name).message);
+  updateFormEl.name.setCustomValidity(Person.checkName( slots.name).message);
 
   if (selectUpdateActorEl.checkValidity() && updateFormEl.checkValidity()) {
-    Actor.update( slots);
+      Person.updatePerson( slots);
     // update the actor selection list's option element
     selectUpdateActorEl.options[selectUpdateActorEl.selectedIndex].text = slots.name;
   }
@@ -127,9 +126,10 @@ updateFormEl["commit"].addEventListener("click", function () {
 function handleActorSelectChangeEvent () {
   let key = "", act = null;
   key = updateFormEl.selectActor.value;
+    console.log(key);
   if (key) {
-    act = Actor.instances[key];
-    updateFormEl.actorID.value = act.actorID;
+    act = Person.instances[key];
+    updateFormEl.actorID.value = act.personID;
     updateFormEl.name.value = act.name;
   } else {
     updateFormEl.reset();
@@ -146,8 +146,8 @@ document.getElementById("destroy")
     document.getElementById("Actor-M").style.display = "none";
     document.getElementById("Actor-D").style.display = "block";
     // set up the actor selection list
-    fillSelectWithOptions( selectDeleteActorEl, Actor.instances,
-      "actorID", {displayProp:"name"});
+    fillSelectWithOptions( selectDeleteActorEl, Person.instances,
+      "personID", {displayProp:"name"});
     deleteFormEl.reset();
   });
 // handle Delete button click events
@@ -155,7 +155,7 @@ deleteFormEl["commit"].addEventListener("click", function () {
   const actorIdRef = selectDeleteActorEl.value;
   if (!actorIdRef) return;
   if (confirm( "Do you really want to delete this actor?")) {
-    Actor.destroy( actorIdRef);
+      Person.deletePerson( actorIdRef);
     selectDeleteActorEl.remove( deleteFormEl.selectActor.selectedIndex);
   }
 });

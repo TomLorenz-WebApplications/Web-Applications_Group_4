@@ -5,10 +5,7 @@ import {
   IntervalConstraintViolation, PatternConstraintViolation, UniquenessConstraintViolation
 }
   from "../../lib/errorTypes.js";
-
-import Actor from "./Actor.js";
-import Director from "./Director.js";
-
+import Person from "./Person.js";
 
 //Class movie
 class Movie {
@@ -148,32 +145,17 @@ class Movie {
     }
   }
 
-  static checkDirector2(directorID) {
+  static checkDirector(directorID) {
     var validationResult = null;
     var id = Number(directorID);
+    console.log("#######",id);
     if (typeof (id) != "number" || id == "" || id < 1 || isNaN(id)) {
       return new RangeConstraintViolation("directorID must be a positive Integer!");
     } else {
-      if (Director.instances[directorID]) {
-        return new UniquenessConstraintViolation("directorID already existent!");
-      } else {
         return new NoConstraintViolation();
       }
     }
-  }
 
-  static checkDirector(directorID) {
-    console.log("checkDirector");
-    var validationResult = null;
-    if (directorID) {
-      validationResult = new NoConstraintViolation();  // optional
-    } else {
-      // invoke foreign key constraint check
-      validationResult = new MandatoryValueConstraintViolation("a director is needed");
-      //validationResult = new NoConstraintViolation();
-    }
-    return validationResult;
-  }
 
   get actors() {
     return this._actors;
@@ -193,18 +175,6 @@ class Movie {
         this._actors = Object.keys(a);
       }
     }
-  }
-
-  static checkActor(actor_id) {
-    var validationResult = null;
-    if (!actor_id) {
-      // actor(s) are optional
-      validationResult = new NoConstraintViolation();
-    } else {
-      // invoke foreign key constraint check
-      validationResult = Actor.checkActorIdAsIdRef(actor_id);
-    }
-    return validationResult;
   }
 
 }

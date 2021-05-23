@@ -1,12 +1,10 @@
-import Actor from "../m/Actor.js";
 import Movie from "../m/Movie.js";
-import Director from "../m/Director.js";
+import Person from "../m/Person.js";
 import {createListFromMap, fillSelectWithOptions, createMultipleChoiceWidget} from "../../lib/util.js";
 
 //loading data
-Actor.retrieveAll();
 Movie.getAllMovies();
-Director.retrieveAll();
+Person.getAllPersons();
 
 /***************************************************************
  Set up general, use-case-independent UI elements
@@ -44,11 +42,11 @@ document.getElementById("getAllMovies")
       row.insertCell().textContent = movie.movieID;
       row.insertCell().textContent = movie.title;
       row.insertCell().textContent = movie.releaseDate;
-      row.insertCell().textContent = Director.instances[movie.director].name;
+      console.log(Person.instances);
+      row.insertCell().textContent = Person.instances[movie.director].name;
       var actorstring = "";
-
       for (var i = 0, max = movie.actors.length; i < max; i++) {
-        actorstring = Actor.instances[movie.actors[i]]._name + ";" + actorstring;
+        actorstring = Person.instances[movie.actors[i]]._name + ";" + actorstring;
       }
       row.insertCell().textContent = actorstring;
     }
@@ -64,10 +62,10 @@ document.getElementById("create").addEventListener("click", function () {
   document.getElementById("Movie-M").style.display = "none";
   document.getElementById("Movie-C").style.display = "block";
   // set up a single selection list for selecting a director
-  fillSelectWithOptions(selectDirectorEl, Director.instances, "directorID", {displayProp: "name"});
+  fillSelectWithOptions(selectDirectorEl, Person.instances, "personID", {displayProp: "name"});
   // set up a multiple selection list for selecting actors
-  fillSelectWithOptions(selectActorsEl, Actor.instances,
-    "actorID", {displayProp: "name"});
+  fillSelectWithOptions(selectActorsEl, Person.instances,
+    "personID", {displayProp: "name"});
   createFormEl.reset();
 });
 // set up event handlers for responsive constraint validation
@@ -86,7 +84,7 @@ createFormEl.releaseDate.addEventListener("input", function () {
 });
 
 
-createFormEl.selectDirector.setCustomValidity(Movie.checkDirector(createFormEl.selectDirector.value).message);
+createFormEl.selectDirector.setCustomValidity(Person.checkPersonID(createFormEl.selectDirector.value).message);
 // handle Save button click events
 createFormEl["commit"].addEventListener("click", function () {
   const slots = {
@@ -150,14 +148,14 @@ selectUpdateMovieEl.addEventListener("change", function () {
     formEl.releaseDate.value = movie.releaseDate;
     // set up the associated director selection list
     console.log(movie);
-    fillSelectWithOptions(selectDirectorEl, Director.instances, "directorID",  {displayProp:"name"});
+    fillSelectWithOptions(selectDirectorEl, Person.instances, "personID",  {displayProp:"name"});
     // set up the associated actors selection widget
     //mincard 1
     createMultipleChoiceWidget(selectActorsWidget, movie.actors,
-      Actor.instances, "actorID", "name", 1);  // minCard=1
+      Person.instances, "personID", "name", 1);  // minCard=1
     // assign associated director as the selected option to select element
     if (movie.director) {
-      console.log(Director.instances[movie.director].name);
+      console.log(Person.instances[movie.director].name);
       formEl.selectDirector.value = movie.director;
       saveButton.disabled = false;
     }
