@@ -37,12 +37,24 @@ function generateTestData(){
             personID:9 ,
             name: "Keanu Reeves"
         });
+        Person.instances["10"] = new Person({
+            personID:10 ,
+            name: "Francis Ford Coppola"
+        });
+        Person.instances["11"] = new Person({
+            personID:11 ,
+            name: "Natalie Portman"
+        });
+        Person.instances["12"] = new Person({
+            personID:12 ,
+            name: "Al Pacino"
+        });
         Person.saveAll();
         Movie.instances["1"] = new Movie({
             movieID:1,
             title: "Pulp Fiction",
             releaseDate: "1994-05-12",
-            director: 3,
+            director: 1,
             actors: [5,6]
         });
         Movie.instances["2"] = new Movie({
@@ -56,6 +68,13 @@ function generateTestData(){
             movieID:3,
             title: "Dangerous Liaisons",
             releaseDate: "1988-12-16",
+            director: 1,
+            actors: [9,5]
+        });
+        Movie.instances["4"] = new Movie({
+            movieID:4,
+            title: "The Godfather",
+            releaseDate: "1972-03-15",
             director: 1,
             actors: [9,5]
         });

@@ -273,18 +273,12 @@ Movie.updateMovie = function (data) {
       console.log("movie director:", movie.director);
       updatedProperties.push("director");
     }
-    if(movie.actorIdRefsToAdd){
+    if(!(movie.actors === data.actors)){
+      movie.actors = data.actors;
+      console.log(data.actors);
       updatedProperties.push("actors(added)");
-      for (let actorID of movie.actorIdRefsToAdd){
-        this._actors = movie.actorIdRefsToAdd;
-      }
     }
-    if(movie.actorIdRefsToRemove){
-      updatedProperties.push("actors(removed)");
-      for (let actorID of movie.actorIdRefsToRemove){
-        delete this._actors[actorID];
-      }
-    }
+
     // for (var i = 0, maxnew = data.actors.max; i < maxnew; i++) {
     //   var diff = 0;
     //   var moreAct = true;
@@ -319,6 +313,7 @@ Movie.updateMovie = function (data) {
   if (noConstraintViolation) {
     if (updatedProperties.length > 0) {
       console.log("updated " + data.movieID);
+      Movie.saveAll();
     } else {
       console.log("didnt update" + data.movieID + "since nothing to update there");
     }

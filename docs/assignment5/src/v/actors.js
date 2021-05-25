@@ -4,7 +4,7 @@
 import Person from "../m/Person.js";
 import Movie from "../m/Movie.js";
 
-import { fillSelectWithOptions } from "../../lib/util.js";
+import {createMultipleChoiceWidget, fillSelectWithOptions} from "../../lib/util.js";
 
 /***************************************************************
  Load data
@@ -44,9 +44,16 @@ document.getElementById("retrieveAll")
     for (let key of Object.keys(Person.instances)) {
       const actor = Person.instances[key];
       const row = tableBodyEl.insertRow();
-      console.log(actor);
       row.insertCell().textContent = actor.name;
       row.insertCell().textContent = actor.personID;
+      var playedIn = "";
+      //build the played-in string!
+      for(let key2 of Object.keys(Movie.instances)){
+          if(Movie.instances[key2].actors.includes(actor.personID)){
+            playedIn = Movie.instances[key2].title + ";" +playedIn;
+          }
+      }
+      row.insertCell().textContent = playedIn;
     }
     document.getElementById("Actor-M").style.display = "none";
     document.getElementById("Actor-R").style.display = "block";
@@ -55,11 +62,13 @@ document.getElementById("retrieveAll")
 /**********************************************
  Use case Create Actor
  **********************************************/
-const createFormEl = document.querySelector("section#Actor-C > form");
+const createFormEl = document.querySelector("section#Actor-C > form"),
+    selectMovies = createFormEl.selectMovies;
 document.getElementById("create")
   .addEventListener("click", function () {
     document.getElementById("Actor-M").style.display = "none";
     document.getElementById("Actor-C").style.display = "block";
+    fillSelectWithOptions(selectMovies, Movie.instances, "movieID", {displayProp: "title"});
     createFormEl.reset();
   });
 // set up event handlers for responsive constraint validation
@@ -71,15 +80,21 @@ createFormEl.actorID.addEventListener("input", function () {
 // handle Save button click events
 createFormEl["commit"].addEventListener("click", function () {
   const slots = {
-    personID: createFormEl.actorID.value,
-    name: createFormEl.name.value
+      personID: createFormEl.actorID.value,
+      name: createFormEl.name.value,
+      playedIn : []
   };
   console.log(slots);
   // check all input fields and show error messages
   createFormEl.actorID.setCustomValidity(
       Person.checkPersonID( slots.personID).message);
   createFormEl.name.setCustomValidity(Person.checkName( slots.name).message);
-  /* SIMPLIFIED CODE: no before-submit validation of name */
+  var selectedMovies = createFormEl.selectMovies.selectedOptions;
+  for (const opt of selectedMovies) {
+      console.log(opt);
+        slots.playedIn.push(Number(opt.value));
+        console.log(Number(opt.value));
+    }
   // save the input data only if all form fields are valid
   if (createFormEl.checkValidity()) Person.addNewPerson( slots);
 });
@@ -89,6 +104,7 @@ createFormEl["commit"].addEventListener("click", function () {
  **********************************************/
 const updateFormEl = document.querySelector("section#Actor-U > form");
 const selectUpdateActorEl = updateFormEl.selectActor;
+const selectupdateMovies = updateFormEl.selectMovieUpdate;
 document.getElementById("update")
   .addEventListener("click", function () {
     document.getElementById("Actor-M").style.display = "none";
@@ -96,6 +112,7 @@ document.getElementById("update")
     // set up the actor selection list
     fillSelectWithOptions( selectUpdateActorEl, Person.instances,
       "personID", {displayProp:"name"});
+    fillSelectWithOptions( selectupdateMovies, Movie.instances, "movieID", {displayProp:"title"});
     updateFormEl.reset();
   });
 selectUpdateActorEl.addEventListener("change", handleActorSelectChangeEvent);
@@ -110,14 +127,22 @@ updateFormEl["commit"].addEventListener("click", function () {
   const actorIdRef = selectUpdateActorEl.value;
   if (!actorIdRef) return;
   const slots = {
-    personID: updateFormEl.actorID.value,
-    name: updateFormEl.name.value
+      personID: updateFormEl.actorID.value,
+      name: updateFormEl.name.value,
+      playedIn : []
   }
-
+  var selectedMovies = updateFormEl.selectMovieUpdate.selectedOptions;
+    for (const opt of selectedMovies) {
+        console.log(opt);
+        slots.playedIn.push(Number(opt.value));
+        console.log(Number(opt.value));
+    }
   updateFormEl.name.setCustomValidity(Person.checkName( slots.name).message);
 
   if (selectUpdateActorEl.checkValidity() && updateFormEl.checkValidity()) {
+      console.log(slots);
       Person.updatePerson( slots);
+      Person.saveAll();
     // update the actor selection list's option element
     selectUpdateActorEl.options[selectUpdateActorEl.selectedIndex].text = slots.name;
   }
@@ -131,6 +156,25 @@ function handleActorSelectChangeEvent () {
     act = Person.instances[key];
     updateFormEl.actorID.value = act.personID;
     updateFormEl.name.value = act.name;
+    var playeedMovies = []
+      console.log(Movie.instances);
+      for(const opt of Object.keys(Movie.instances)){
+          console.log(opt)
+          if(Movie.instances[opt].actors.includes(act.personID)){
+              playeedMovies.push(Movie.instances[opt].movieID);
+          }
+      }
+      console.log(selectupdateMovies);
+      for(const opt of playeedMovies){
+          for(const ind of selectupdateMovies){
+              console.log(ind);
+              if(Number(ind.value) === Number(opt)){
+                  ind.selected = true;
+              }else{
+                  ind.selected = false;
+              }
+          }
+      }
   } else {
     updateFormEl.reset();
   }
