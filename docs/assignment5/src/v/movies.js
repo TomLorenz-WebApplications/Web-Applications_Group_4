@@ -119,6 +119,122 @@ createFormEl["commit"].addEventListener("click", function () {
 });
 
 /**********************************************
+ * Use case Update Movie
+ **********************************************/
+const updateFormEl = document.querySelector("section#Movie-U > form"),
+  selectUpdateMovieEl = updateFormEl.selectMovie,
+    selectActorsUpdateEl = createFormEl.selectActorsUpdate;
+document.getElementById("update").addEventListener("click", function () {
+  document.getElementById("Movie-M").style.display = "none";
+  document.getElementById("Movie-U").style.display = "block";
+  // set up the movie selection list
+  fillSelectWithOptions(selectUpdateMovieEl, Movie.instances,
+    "movieID", {displayProp: "title"});
+  updateFormEl.reset();
+});
+/**
+ * handle movie selection events: when a movie is selected,
+ * populate the form with the data of the selected movie
+ */
+selectUpdateMovieEl.addEventListener("change", function () {
+  const formEl = document.querySelector("section#Movie-U > form"),
+    saveButton = formEl.commit,
+    //ohne value
+      selectDirectorEl = formEl.selectDirector,
+      selectActorsUpdateEl = formEl.selectActorsUpdate,
+      movieID = formEl.selectMovie.value;
+  if (movieID) {
+    const movie = Movie.instances[movieID];
+    formEl.movieID.value = movie.movieID;
+    formEl.title.value = movie.title;
+    formEl.releaseDate.value = movie.releaseDate;
+    // set up the associated director selection list
+    console.log(movie);
+    fillSelectWithOptions(selectDirectorEl, Person.instances, "personID",  {displayProp:"name"});
+    // set up the associated actors selection widget
+    //mincard 1
+    fillSelectWithOptions(selectActorsUpdateEl, Person.instances, "personID",  {displayProp:"name"});
+    // assign associated director as the selected option to select element
+    if (movie.director) {
+      console.log(Person.instances[movie.director].name);
+      formEl.selectDirector.value = movie.director;
+      saveButton.disabled = false;
+    }
+  } else {
+    formEl.reset();
+    formEl.selectDirector.selectedIndex = 0;
+    selectActorsWidget.innerHTML = "";
+    saveButton.disabled = true;
+  }
+});
+updateFormEl.movieID.addEventListener("input", function () {
+  updateFormEl.movieID.setCustomValidity(
+    Movie.checkMovieID(updateFormEl.movieID.value).message);
+});
+updateFormEl.title.addEventListener("input", function () {
+  updateFormEl.title.setCustomValidity(
+    Movie.checkTitle(updateFormEl.title.value).message);
+});
+updateFormEl.releaseDate.addEventListener("input", function () {
+  updateFormEl.releaseDate.setCustomValidity(
+    Movie.checkReleaseDate(updateFormEl.releaseDate.value).message);
+});
+
+// handle Save button click events
+updateFormEl["commit"].addEventListener("click", function () {
+  const movieIdRef = selectUpdateMovieEl.value;
+  if (!movieIdRef) return;
+  const slots = {
+    movieID: updateFormEl.movieID.value,
+    title: updateFormEl.title.value,
+    releaseDate: updateFormEl.releaseDate.value,
+    director: Number(updateFormEl.selectDirector.value),
+    actors: []
+  }
+  // add event listeners for responsive validation
+  updateFormEl.title.setCustomValidity(
+    Movie.checkTitle(slots.title).message);
+  updateFormEl.releaseDate.setCustomValidity(
+    Movie.checkReleaseDate(slots.releaseDate).message);
+  // commit the update only if all form field values are valid
+  const selectActorOptions = updateFormEl.selectActorsUpdate.selectedOptions;
+  for (const opt of selectActorOptions) {
+    slots.actors.push(Number(opt.value));
+    console.log("slots", slots);
+  }
+
+  console.log(slots);
+  Movie.updateMovie(slots);
+  // update the movie selection list's option element
+  selectUpdateMovieEl.options[selectUpdateMovieEl.selectedIndex].text = slots.title;
+});
+
+/**********************************************
+ * Use case Delete Movie
+ **********************************************/
+const deleteFormEl = document.querySelector("section#Movie-D > form");
+const selectDeleteMovieEl = deleteFormEl.selectMovie;
+document.getElementById("destroy")
+  .addEventListener("click", function () {
+    document.getElementById("Movie-M").style.display = "none";
+    document.getElementById("Movie-D").style.display = "block";
+    // set up the actor selection list
+    fillSelectWithOptions(selectDeleteMovieEl, Movie.instances,
+      "movieID", {displayProp: "title"});
+    deleteFormEl.reset();
+  });
+// handle Delete button click events
+deleteFormEl["commit"].addEventListener("click", function () {
+  const movieIdRef = selectDeleteMovieEl.value;
+  if (!movieIdRef) return;
+  if (confirm("Do you really want to delete this movie?")) {
+    Movie.deleteMovie(movieIdRef);
+    // remove deleted movie from select options
+    deleteFormEl.selectMovie.remove(deleteFormEl.selectMovie.selectedIndex);
+  }
+});
+
+/**********************************************
  * Refresh the Manage Movies Data UI
  **********************************************/
 function refreshManageDataUI() {

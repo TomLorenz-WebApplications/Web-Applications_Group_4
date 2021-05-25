@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Director control</title>
+  <script src="src/v/directors.js" type="module"></script>
+</head>
+<body>
+<div class="wrapper clearfix">
+    <!-- ======================================================= -->
+    <section id="Director-M" class="UI-Page">
+        <!-- ======================================================= -->
+        <h1>Manage director data</h1>
+        <ul class="menu">
+            <li>
+                <button type="button" id="retrieveAll">Retrieve/list all
+                    director records
+                </button>
+            </li>
+            <li>
+                <button type="button" id="create">Create a new director record</button>
+            </li>
+            <li>
+                <button type="button" id="update">Update an director record</button>
+            </li>
+            <li>
+                <button type="button" id="destroy">Delete an director record</button>
+            </li>
+        </ul>
+        <div class="button"><a href="index.html">Back to Main menu</a></div>
+    </section>
+    <!-- ======================================================= -->
+    <section id="Director-R" class="UI-Page">
+        <!-- ======================================================= -->
+        <h1>Retrieve and list all director records</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>directed</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="button">
+            <button type="button" class="back-to-menu">Back to menu</button>
+        </div>
+    </section>
+    <!-- ======================================================= -->
+    <section id="Director-C" class="UI-Page">
+        <!-- ======================================================= -->
+        <h1>Create a new director record</h1>
+        <p>
+            you cant choose a Movie directly for a Director since all movies have a director as requirement.
+            You can swap it at movie-edit and assign a director there!
+        </p>
+        <form>
+            <div class="field">
+                <label>ID: <input type="text" name="directorID"/></label>
+            </div>
+            <div class="field">
+                <label>Name: <input type="text" name="name"/></label>
+            </div>
+            <div class="button-group">
+                <button type="submit" name="commit">Save</button>
+                <button type="button" class="back-to-menu">Back to menu</button>
+            </div>
+        </form>
+    </section>
+    <!-- ======================================================= -->
+    <section id="Director-U" class="UI-Page">
+        <!-- ======================================================= -->
+        <h1>Update an Director record</h1>
+        <p>
+            you cant update a director directly too a movie since there is always a director assigned too it!
+            You should go too Movie and change editor there!
+        </p>
+        <form>
+            <div class="select-one">
+                <label>Select director: <select name="selectDirector"></select></label>
+            </div>
+            <div class="field">
+                <label>ID:
+                    <output name="directorID"></output>
+                </label>
+            </div>
+                <label>Name: <input type="text" name="name"/></label>
+
+            <div class="button-group">
+                <button type="submit" name="commit">Save</button>
+                <button type="button" class="back-to-menu">Back to menu</button>
+            </div>
+        </form>
+    </section>
+    <!-- ======================================================= -->
+    <section id="Director-D" class="UI-Page">
+        <!-- ======================================================= -->
+        <h1>Delete an Director record</h1>
+        <form>
+            <div class="select-one">
+                <label>Select director: <select name="selectDirector"></select></label>
+            </div>
+            <div class="button-group">
+                <button type="submit" name="commit">Delete</button>
+                <button type="button" class="back-to-menu">Back to menu</button>
+            </div>
+        </form>
+    </section>
+</div>
+
+</body>
+</html>
