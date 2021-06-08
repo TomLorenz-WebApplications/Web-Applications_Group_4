@@ -1,4 +1,4 @@
-import Movie, {MovieCategoryEL} from "../m/Movie.js";
+import Movie, { MovieCategoryEL } from "../m/Movie.js";
 import Person from "../m/Person.js";
 import {createListFromMap, fillSelectWithOptions, createMultipleChoiceWidget} from "../../lib/util.js";
 import {displaySegmentFields, undisplayAllSegmentFields} from "../v/app.js"
@@ -10,6 +10,7 @@ import Director from "../m/Director.js";
 Movie.getAllMovies();
 Actor.retrieveAll();
 Director.retrieveAll();
+Person.retrieveAll();
 
 /***************************************************************
  Set up general, use-case-independent UI elements
@@ -26,7 +27,9 @@ for (const frm of document.querySelectorAll("section > form")) {
   });
 }
 // save data when leaving the page
-window.addEventListener("beforeunload", Movie.saveAll);
+window.addEventListener("beforeunload", function () {
+  Movie.saveAll();
+});
 
 /**********************************************
  Use case Retrieve/List All Movies
@@ -87,6 +90,7 @@ document.getElementById("create").addEventListener("click", function () {
   // set up a multiple selection list for selecting actors
   fillSelectWithOptions(selectActorsEl, Actor.instances,
     "personID", {displayProp: "name"});
+  fillSelectWithOptions(selectPerson, Person.instances, "personID", {displayProp:"name"});
   // console.log(Movie.instances);
   // console.log(Movie.instances[1].category);
   // let categories = [];
@@ -125,13 +129,14 @@ createFormEl.episodeNo.addEventListener("input", function () {
     Movie.checkEpisodeNo(createFormEl.episodeNo.value,
       parseInt(createFormEl.category.value) + 1).message);
 });
-createFormEl.about.addEventListener("input", function () {
-  createFormEl.about.setCustomValidity(
-    Movie.checkAbout(createFormEl.about.value,
-      parseInt(createFormEl.category.value) + 1).message);
+createFormEl.selectPerson.addEventListener("input", function () {
+  createFormEl.selectPerson.setCustomValidity(
+    Movie.checkAbout(createFormEl.selectPerson.value,
+      parseInt(createFormEl.selectPerson.value) + 1).message);
 });
 
 // set up the movie category selection list
+console.log(MovieCategoryEL.labels);
 fillSelectWithOptions(createCategorySelectEl, MovieCategoryEL.labels);
 createCategorySelectEl.addEventListener("change", handleCategorySelectChangeEvent);
 
@@ -160,9 +165,9 @@ createFormEl["commit"].addEventListener("click", function () {
           Movie.checkEpisodeNo(createFormEl.episodeNo.value, slots.category).message);
         break;
       case MovieCategoryEL.BIOGRAPHY:
-        slots.about = createFormEl.about.value;
-        createFormEl.about.setCustomValidity(
-          Movie.checkAbout(createFormEl.about.value, slots.category).message);
+        slots.about = Number(createFormEl.selectPerson.value);
+        createFormEl.selectPerson.setCustomValidity(
+          Movie.checkAbout(createFormEl.selectPerson.value, slots.category).message);
         break;
     }
   }
@@ -208,6 +213,7 @@ document.getElementById("update").addEventListener("click", function () {
   // set up the movie selection list
   fillSelectWithOptions(selectUpdateMovieEl, Movie.instances,
     "movieID", {displayProp: "title"});
+  fillSelectWithOptions(selectPerson, Person.instances, "personID", {displayProp:"name"});
   document.getElementById("Movie-M").style.display = "none";
   document.getElementById("Movie-U").style.display = "block";
   updateFormEl.reset();
@@ -277,9 +283,9 @@ updateFormEl.episodeNo.addEventListener("input", function () {
     Movie.checkEpisodeNo(updateFormEl.episodeNo.value,
       parseInt(updateFormEl.category.value) + 1).message);
 });
-updateFormEl.about.addEventListener("input", function () {
-  updateFormEl.about.setCustomValidity(
-    Movie.checkAbout(updateFormEl.about.value,
+updateFormEl.selectPerson.addEventListener("input", function () {
+  updateFormEl.selectPerson.setCustomValidity(
+    Movie.checkAbout(updateFormEl.selectPerson.value,
       parseInt(updateFormEl.category.value) + 1).message);
 });
 
@@ -319,7 +325,7 @@ updateFormEl["commit"].addEventListener("click", function () {
           Movie.checkEpisodeNo(slots.episodeNo, slots.category).message);
         break;
       case MovieCategoryEL.BIOGRAPHY:
-        slots.about = updateFormEl.about.value;
+        slots.about = selectPerson.value;
         updateFormEl.about.setCustomValidity(
           Movie.checkAbout(slots.about, slots.category).message);
         break;
@@ -411,10 +417,10 @@ function handleMovieSelectChangeEvent() {
         case MovieCategoryEL.TVSERIESEPISODE:
           updateFormEl.tvSeriesName.value = movie.tvSeriesName;
           updateFormEl.episodeNo.value = movie.episodeNo;
-          updateFormEl.about.value = "";
+          updateFormEl.selectPerson.value = "";
           break;
         case MovieCategoryEL.BIOGRAPHY:
-          updateFormEl.about.value = movie.about;
+          updateFormEl.selectPerson.value = movie.about;
           updateFormEl.tvSeriesName.value = "";
           updateFormEl.episodeNo.value = "";
           break;

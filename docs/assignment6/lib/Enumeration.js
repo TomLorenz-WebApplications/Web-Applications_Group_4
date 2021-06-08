@@ -19,7 +19,7 @@ function Enumeration( enumArg) {
     if (!enumArg.every( function (n) {
       return (typeof(n) === "string"); })) {
       throw new ConstraintViolation(
-        "A list of enumeration labels must be an array of strings!");
+          "A list of enumeration labels must be an array of strings!");
     }
     this.labels = enumArg;
     this.enumLitNames = this.labels;
@@ -29,7 +29,7 @@ function Enumeration( enumArg) {
     if (!Object.keys( enumArg).every( function (code) {
       return (typeof( enumArg[code]) === "string"); })) {
       throw new ConstraintViolation(
-        "All values of a code list map must be strings!");
+          "All values of a code list map must be strings!");
     }
     this.codeList = enumArg;
     // use the codes as the names of enumeration literals
@@ -39,7 +39,7 @@ function Enumeration( enumArg) {
     });
   } else  {
     throw new ConstraintViolation(
-      `Invalid Enumeration constructor argument: ${enumArg}`);
+        `Invalid Enumeration constructor argument: ${enumArg}`);
   }
   this.MAX = this.enumLitNames.length;
   // generate the enumeration literals by capitalizing/normalizing the names
@@ -56,7 +56,7 @@ function Enumeration( enumArg) {
   Object.freeze( this);
 }
 /*
- * Serialize a list of enumeration literals/indexes as a list of 
+ * Serialize a list of enumeration literals/indexes as a list of
  * enumeration literal names
  */
 Enumeration.prototype.toString = function (a) {
@@ -66,3 +66,4 @@ Enumeration.prototype.toString = function (a) {
 }
 
 export { Enumeration };
+

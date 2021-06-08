@@ -72,7 +72,7 @@
                         <select name="selectActors" multiple="multiple"></select>
                     </label>
                 </div>
-                <div class="field">
+                <div class="select-one">
                     <label>Category: <select name="category"></select></label>
                 </div>
                 <div class="field TVSERIESEPISODE"><!-- conditional field -->
@@ -80,7 +80,9 @@
                     <label>Episode Number: <input type="text" name="episodeNo"/></label>
                 </div>
                 <div class="field BIOGRAPHY"><!-- conditional field -->
-                    <label>About: <input type="text" name="about"/></label>
+                    <div class="select-one">
+                        <label>About Person: <select name="selectPerson"></select></label>
+                    </div>
                 </div>
                 <div class="button-group">
                     <button type="submit" name="commit">Save</button>
@@ -123,8 +125,11 @@
                     <label>Episode Number: <input type="text" name="episodeNo"/></label>
                 </div>
                 <div class="field BIOGRAPHY"><!-- conditional field -->
-                    <div class="select-one">
-                    <label>About: <select name="about"></select></label></div>
+                    <div class="field BIOGRAPHY"><!-- conditional field -->
+                        <div class="select-one">
+                            <label>About Person: <select name="selectPerson"></select></label>
+                        </div>
+                    </div>
                 </div>
                 <div class="button-group">
                     <button type="submit" name="commit" disabled="disabled">Save</button>

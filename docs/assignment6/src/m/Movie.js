@@ -18,7 +18,7 @@ import { Enumeration } from "../../lib/Enumeration.js";
  *
  * @global
  */
-const MovieCategoryEL = new Enumeration(["TVSERIESEPISODE", "BIOGRAPHY"]);
+const MovieCategoryEL = new Enumeration(["TVSERIESEPISODE","BIOGRAPHY"]);
 
 //Class movie
 class Movie {

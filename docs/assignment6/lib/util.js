@@ -94,24 +94,30 @@ function fillListFromMap( listEl, eTbl, displayProp) {
  * @param {object} optPar [optional]  A record of optional parameter slots
  *                 including optPar.displayProp and optPar.selection
  */
-function fillSelectWithOptions(selectEl, selectionRange, keyProp, optPar) {
-    var optionEl = null, obj = null, displayProp = "";
+function fillSelectWithOptions( selectEl, selectionRange, keyProp, optPar) {
+    var optionEl=null, displayProp="";
     // delete old contents
     selectEl.innerHTML = "";
     // create "no selection yet" entry
     if (!selectEl.multiple) selectEl.add( createOption(""," --- "));
     // create option elements from object property values
-    var options = Object.keys( selectionRange);
-    for (const i of options.keys()) {
-        obj = selectionRange[options[i]];
-        if (optPar && optPar.displayProp) displayProp = optPar.displayProp;
-        else displayProp = keyProp;
-        optionEl = createOption( obj[keyProp], obj[displayProp]);
-        // if invoked with a selection argument, flag the selected options
-        if (selectEl.multiple && optPar && optPar.selection &&
-            optPar.selection[keyProp]) {
-            // flag the option element with this value as selected
-            optionEl.selected = true;
+    var options = Array.isArray( selectionRange) ? selectionRange : Object.keys( selectionRange);
+    for (let i=0; i < options.length; i++) {
+        if (Array.isArray( selectionRange)) {
+            optionEl = createOption( i, options[i]);
+        } else {
+            const key = options[i];
+            const obj = selectionRange[key];
+            if (!selectEl.multiple) obj.index = i+1;  // store selection list index
+            if (optPar && optPar.displayProp) displayProp = optPar.displayProp;
+            else displayProp = keyProp;
+            optionEl = createOption( key, obj[displayProp]);
+            // if invoked with a selection argument, flag the selected options
+            if (selectEl.multiple && optPar && optPar.selection &&
+                optPar.selection[keyProp]) {
+                // flag the option element with this value as selected
+                optionEl.selected = true;
+            }
         }
         selectEl.add( optionEl);
     }
