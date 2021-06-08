@@ -15,6 +15,11 @@ function createIsoDateString(d) {
  * @param {string} txt [optional]
  * @return {object}
  */
+
+// *************** I N T E G E R - Related *************************************
+function isIntegerOrIntegerString (x) {
+    return Number.isInteger( parseInt(x));
+}
 function createPushButton( txt) {
     var pB = document.createElement("button");
     pB.type = "button";
@@ -304,4 +309,4 @@ function nextYear() {
 }
 
 export { nextYear, isNonEmptyString, fillSelectWithOptions, createListFromMap, createMultipleChoiceWidget,
-    cloneObject };
+    cloneObject, isIntegerOrIntegerString };

@@ -36,14 +36,14 @@ class Person {
             }
         }
 
-        }
+    }
     static checkPersonID2(personID){
         if(isNaN(Number(personID)) || Number(personID) < 1){
             return new RangeConstraintViolation("person ID needs to be positive Integer")
         }else{
-                return new NoConstraintViolation();
-            }
+            return new NoConstraintViolation();
         }
+    }
 
     get name(){
         return this._name;
@@ -70,6 +70,7 @@ class Person {
 }
 
 Person.instances = {};
+Person.subtypes = [];
 
 Person.saveAll = function () {
     var jsoncontent = "", err = false;
@@ -84,13 +85,12 @@ Person.saveAll = function () {
     if (err) console.log("err occured!");
 };
 
-Person.getAllPersons = function () {
+Person.retrieveAll = function () {
     var persons = {};
     try {
         if (!localStorage["persons"]) localStorage["persons"] = "{}";
         else {
             persons = JSON.parse(localStorage["persons"]);
-            console.log(`${Object.keys(persons).length} person records loaded.`);
         }
     } catch (e) {
         alert("Error when reading from Local Storage\n" + e);
@@ -104,6 +104,14 @@ Person.getAllPersons = function () {
             console.log(`${e.constructor.name} while deserializing person ${id}: ${e.message}`);
         }
     }
+    for (const Subtype of Person.subtypes){
+
+        Subtype.retrieveAll();
+        for(const key of Object.keys(Subtype.instances)){
+            Person.instances[Number(key)] = Subtype.instances[Number(key)];
+        }
+    }
+    console.log(`${Object.keys(persons).length} person records loaded.`);
 
 };
 
@@ -111,19 +119,8 @@ Person.addNewPerson = function (data) {
     var person = null;
     try{
         person = new Person({personID: data.personID, name: data.name});
-
         // making sure that Id gets added too the movie
-        console.log(data.playedIn);
-        if(data.playedIn){
-        for(const movie of data.playedIn){
-            console.log(movie)
-            if(!Movie.instances[movie].actors.includes(movie)){
-                console.log(!Movie.instances[movie].actors.includes(movie));
-                console.log(data);
-                Movie.instances[movie].actors.push(data.personID);
-            }
-        }
-        }
+
     }catch (e) {
         console.log(`${e.constructor.name} : ${e.message}`);
         person = null;
@@ -157,6 +154,9 @@ Person.deletePerson = function (personID) {
             console.log("cant delete person because it is used.");
         }   else {
             delete Person.instances[personID];
+            for (const Subtype of Person.subtypes) {
+                if (personID in Subtype.instances) delete Subtype.instances[personID];
+            }
             Person.saveAll();
             console.log(personID + "deleted");
         }
@@ -232,6 +232,8 @@ Person.clearAll = function () {
 }
 
 export default Person;
+
+
 
 
 

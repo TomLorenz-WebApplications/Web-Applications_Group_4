@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Person Control</title>
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico">
+    <script src="src/v/person.js" type="module"></script>
+</head>
+
+<body>
+<div class="wrapper clearfix">
+    <!-- ======================================================= -->
+    <section id="Person-M" class="UI-Page">
+        <!-- ======================================================= -->
+        <h1>Manage Person data</h1>
+        <ul class="menu">
+            <li>
+                <button type="button" id="getAllPerson">Retrieve/list all Person
+                    records
+                </button>
+            </li>
+            <li>
+                <button type="button" id="create">Create a new Person record</button>
+            </li>
+            <li>
+                <button type="button" id="update">Update a Person record</button>
+            </li>
+            <li>
+                <button type="button" id="destroy">Delete a Person record</button>
+            </li>
+        </ul>
+        <div class="button"><a href="index.html">Back to Main menu</a></div>
+    </section>
+    <!-- ======================================================= -->
+    <section id="Person-R" class="UI-Page">
+        <!-- ======================================================= -->
+        <h1>Retrieve and list all Person records</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>personID</th>
+                <th>name</th>
+                <th>Biography</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="button">
+            <button type="button" class="back-to-menu">Back to menu</button>
+        </div>
+    </section>
+    <!-- ======================================================= -->
+    <section id="Person-C" class="UI-Page">
+        <!-- ======================================================= -->
+        <h1>Create a new Person record</h1>
+        <form>
+            <div class="field">
+                <label>personID: <input type="text" name="personID"/></label>
+            </div>
+            <div class="field">
+                <label>Name: <input type="text" name="name"/></label>
+            </div>
+            <div class="button-group">
+                <button type="submit" name="commit">Save</button>
+                <button type="button" class="back-to-menu">Back to menu</button>
+            </div>
+        </form>
+    </section>
+    <!-- ======================================================= -->
+    <section id="Person-U" class="UI-Page">
+        <!-- ======================================================= -->
+        <h1>Update a Person record</h1>
+        <form autocomplete="off">
+            <div class="select-one">
+                <label>Select Person: <select name="selectPerson"></select></label>
+            </div>
+            <div class="field">
+                <label>personID:
+                    <output name="personID"></output>
+                </label>
+            </div>
+            <div class="field">
+                <label>Name: <input type="text" name="name"/></label>
+            </div>
+            <div class="button-group">
+                <button type="submit" name="commit">Save</button>
+                <button type="button" class="back-to-menu">Back to menu</button>
+            </div>
+        </form>
+    </section>
+    <!-- ======================================================= -->
+    <section id="Person-D" class="UI-Page">
+        <!-- ======================================================= -->
+        <h1>Delete a Person record</h1>
+        <form>
+            <div class="select-one">
+                <label>Select Person: <select name="selectPerson"></select></label>
+            </div>
+            <div class="button-group">
+                <button type="submit" name="commit">Delete</button>
+                <button type="button" class="back-to-menu">Back to menu</button>
+            </div>
+        </form>
+    </section>
+</div>
+</body>
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+</style>
+</html>

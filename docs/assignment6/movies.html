@@ -72,60 +72,28 @@
                         <select name="selectActors" multiple="multiple"></select>
                     </label>
                 </div>
+                <div class="field">
+                    <label>Category: <select name="category"></select></label>
+                </div>
+                <div class="field TVSERIESEPISODE"><!-- conditional field -->
+                    <label>TV Series Name: <input type="text" name="tvSeriesName"/></label>
+                    <label>Episode Number: <input type="text" name="episodeNo"/></label>
+                </div>
+                <div class="field BIOGRAPHY"><!-- conditional field -->
+                    <label>About: <input type="text" name="about"/></label>
+                </div>
                 <div class="button-group">
                     <button type="submit" name="commit">Save</button>
                     <button type="button" class="back-to-menu">Back to menu</button>
                 </div>
             </form>
         </section>
-        <!-- ======================================================= -->
-        <section id="Movie-U" class="UI-Page">
-            <!-- ======================================================= -->
-            <h1>Update a Movie record</h1>
-            <form autocomplete="off">
-                <div class="select-one">
-                    <label>Select Movie: <select name="selectMovie"></select></label>
-                </div>
-                <div class="field">
-                    <label>movieID:
-                        <output name="movieID"></output>
-                    </label>
-                </div>
-                <div class="field">
-                    <label>Title: <input type="text" name="title"/></label>
-                </div>
-                <div class="field">
-                    <label>release Date: <input type="text" name="releaseDate"/></label>
-                </div>
-                <div class="select-one">
-                    <label>Director: <select name="selectDirector"></select></label>
-                </div>
-                <div class="select-many">
-                    <label>Actors:
-                        <select name="selectActorsUpdate" multiple="multiple"></select>
-                    </label>
-                </div>
-                <div class="button-group">
-                    <button type="submit" name="commit" disabled="disabled">Save</button>
-                    <button type="button" class="back-to-menu">Back to menu</button>
-                </div>
-            </form>
-        </section>
-        <!-- ======================================================= -->
-        <section id="Movie-D" class="UI-Page">
-            <!-- ======================================================= -->
-            <h1>Delete a movie record</h1>
-            <form>
-                <div class="select-one">
-                    <label>Select movie: <select name="selectMovie"></select></label>
-                </div>
-                <div class="button-group">
-                    <button type="submit" name="commit">Delete</button>
-                    <button type="button" class="back-to-menu">Back to menu</button>
-                </div>
-            </form>
-        </section>
-    </div>
+
 </main>
 </body>
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+</style>
 </html>

@@ -6,15 +6,16 @@
  Import classes, datatypes and utility procedures
  ***************************************************************/
 
-import Person from "../m/Person.js";
 import Movie from "../m/Movie.js";
-import { fillSelectWithOptions } from "../../lib/util.js";
+import Person from "../m/Person.js";
+import {fillSelectWithOptions} from "../../lib/util.js";
+import Director from "../m/Director.js";
 
 /***************************************************************
  Load data
  ***************************************************************/
 
-Person.getAllPersons();
+Director.retrieveAll();
 Movie.getAllMovies();
 
 /***************************************************************
@@ -22,7 +23,9 @@ Movie.getAllMovies();
  ***************************************************************/
 // set up back-to-menu buttons for all use cases
 for (let btn of document.querySelectorAll("button.back-to-menu")) {
-  btn.addEventListener('click', function () {refreshManageDataUI();});
+  btn.addEventListener('click', function () {
+    refreshManageDataUI();
+  });
 }
 // neutralize the submit event for all use cases
 for (let frm of document.querySelectorAll("section > form")) {
@@ -33,8 +36,8 @@ for (let frm of document.querySelectorAll("section > form")) {
 }
 // save data when leaving the page
 window.addEventListener("beforeunload", function () {
-    Person.saveAll();
-    Movie.saveAll();
+  Director.saveAll();
+  Movie.saveAll();
 });
 
 /**********************************************
@@ -45,19 +48,20 @@ document.getElementById("retrieveAll")
     const tableBodyEl = document
       .querySelector("section#Director-R > table > tbody");
     tableBodyEl.innerHTML = "";
-    for (const key of Object.keys(Person.instances)) {
-      const director = Person.instances[key];
+    console.log(Director.instances);
+    for (const key of Object.keys(Director.instances)) {
+      const director = Director.instances[key];
       const row = tableBodyEl.insertRow();
       row.insertCell().textContent = director.personID;
       row.insertCell().textContent = director.name;
-        var directed = "";
-        //build the played-in string!
-        for(let key2 of Object.keys(Movie.instances)){
-            if(Movie.instances[key2].director === (director.personID)){
-                directed = Movie.instances[key2].title + ";" + directed;
-            }
+      var directed = "";
+      //build the directed string!
+      for (let key2 of Object.keys(Movie.instances)) {
+        if (Movie.instances[key2].director === (director.personID)) {
+          directed = Movie.instances[key2].title + ";" + directed;
         }
-        row.insertCell().textContent = directed;
+      }
+      row.insertCell().textContent = directed;
     }
     document.getElementById("Director-M").style.display = "none";
     document.getElementById("Director-R").style.display = "block";
@@ -76,20 +80,20 @@ document.getElementById("create")
 // set up event handlers for responsive constraint validation
 createFormEl.name.addEventListener("input", function () {
   createFormEl.name.setCustomValidity(
-      Person.checkName( createFormEl.name.value).message);
+    Person.checkName(createFormEl.name.value).message);
 });
 // handle Save button click events
 createFormEl["commit"].addEventListener("click", function () {
   const slots = {
-      personID: createFormEl.directorID.value,
-      name: createFormEl.name.value
+    personID: createFormEl.directorID.value,
+    name: createFormEl.name.value
   };
   // check all input fields and show error messages
-  createFormEl.name.setCustomValidity( Person.checkName( slots.name).message);
-  createFormEl.directorID.setCustomValidity( Person.checkPersonID( slots.personID).message);
+  createFormEl.name.setCustomValidity(Person.checkName(slots.name).message);
+  createFormEl.directorID.setCustomValidity(Person.checkPersonID(slots.personID).message);
   /* SIMPLIFIED CODE: no before-submit validation of name */
   // save the input data only if all form fields are valid
-  if (createFormEl.checkValidity()) Person.addNewPerson( slots);
+  if (createFormEl.checkValidity()) Director.addNewPerson(slots);
 });
 
 /**********************************************
@@ -102,20 +106,20 @@ document.getElementById("update")
     document.getElementById("Director-M").style.display = "none";
     document.getElementById("Director-U").style.display = "block";
     // set up the director selection list
-      fillSelectWithOptions( selectUpdateDirectorEl, Person.instances,
-          "personID", {displayProp:"name"});
+    fillSelectWithOptions(selectUpdateDirectorEl, Person.instances,
+      "personID", {displayProp: "name"});
     updateFormEl.reset();
   });
 selectUpdateDirectorEl.addEventListener("change", handleDirectorSelectChangeEvent);
 
 selectUpdateDirectorEl.addEventListener("change", handleDirectorSelectChangeEvent);
 updateFormEl.name.addEventListener("input", function () {
-    updateFormEl.name.setCustomValidity(
-        Person.checkName( updateFormEl.name.value).message);
+  updateFormEl.name.setCustomValidity(
+    Person.checkName(updateFormEl.name.value).message);
 });
 updateFormEl.directorID.addEventListener("input", function () {
-    updateFormEl.directorID.setCustomValidity(
-        Person.checkPersonID( updateFormEl.directorID.value).message);
+  updateFormEl.directorID.setCustomValidity(
+    Person.checkPersonID(updateFormEl.directorID.value).message);
 });
 
 // handle Save button click events
@@ -123,32 +127,33 @@ updateFormEl["commit"].addEventListener("click", function () {
   const directorIdRef = updateFormEl.directorID.value;
   if (!directorIdRef) return;
   const slots = {
-      personID: Number(updateFormEl.directorID.value),
-      name: updateFormEl.name.value
+    personID: Number(updateFormEl.directorID.value),
+    name: updateFormEl.name.value
   }
   // save the input data only if all of the form fields are valid
   // check all property constraints
   // save the input data only if all of the form fields are valid
   if (selectUpdateDirectorEl.checkValidity() && updateFormEl.checkValidity()) {
-      Person.updatePerson(slots);
-      // update the director selection list's option element
-      selectUpdateDirectorEl.options[selectUpdateDirectorEl.selectedIndex].text = slots.name;
+    Person.updatePerson(slots);
+    // update the director selection list's option element
+    selectUpdateDirectorEl.options[selectUpdateDirectorEl.selectedIndex].text = slots.name;
   }
 });
+
 /**
  * handle director selection events
  * when a director is selected, populate the form with the data of the selected director
  */
 function handleDirectorSelectChangeEvent() {
   var key = "", dir = null,
-  key = updateFormEl.selectDirector.value;
-      if(key){
-          dir = Person.instances[key];
-          updateFormEl.directorID.value = dir.personID;
-          updateFormEl.name.value = dir.name;
-        }else {
-          updateFormEl.reset();
-      }
+    key = updateFormEl.selectDirector.value;
+  if (key) {
+    dir = Person.instances[key];
+    updateFormEl.directorID.value = dir.personID;
+    updateFormEl.name.value = dir.name;
+  } else {
+    updateFormEl.reset();
+  }
 
 }
 
@@ -163,27 +168,27 @@ document.getElementById("destroy")
     document.getElementById("Director-M").style.display = "none";
     document.getElementById("Director-D").style.display = "block";
     // set up the director selection list
-    fillSelectWithOptions( selectDeleteDirectorEl, Person.instances,
-      "personID", {displayProp:"name"});
+    fillSelectWithOptions(selectDeleteDirectorEl, Person.instances,
+      "personID", {displayProp: "name"});
     deleteFormEl.reset();
   });
 // handle Delete button click events
 deleteFormEl["commit"].addEventListener("click", function () {
   const directorIdRef = selectDeleteDirectorEl.value;
   if (!directorIdRef) return;
-  if (confirm( "Do you really want to delete this director?")) {
-      var isAssigned = false;
-      console.log(Movie.instances);
-      for (const key of Object.keys(Movie.instances)){
-          if(key === directorIdRef){
-              isAssigned = true;
-              confirm( "Director is used in a movie! Remove Director first from the movie before deleting!");
-          }
+  if (confirm("Do you really want to delete this director?")) {
+    var isAssigned = false;
+    console.log(Movie.instances);
+    for (const key of Object.keys(Movie.instances)) {
+      if (key === directorIdRef) {
+        isAssigned = true;
+        confirm("Director is used in a movie! Remove Director first from the movie before deleting!");
       }
-      if(!isAssigned){
-          Person.deletePerson(directorIdRef);
-          console.log("destroyed Director")
-      }
+    }
+    if (!isAssigned) {
+      Person.deletePerson(directorIdRef);
+      console.log("destroyed Director")
+    }
   }
 });
 

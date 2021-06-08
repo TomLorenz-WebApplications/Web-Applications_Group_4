@@ -3,7 +3,6 @@
  * for property constraint violations
  * @author Gerd Wagner
  */
-
 class ConstraintViolation {
     constructor (msg) {
         this.message = msg;
@@ -12,7 +11,7 @@ class ConstraintViolation {
 class NoConstraintViolation extends ConstraintViolation {
     constructor (msg, v) {
         super( msg);
-        if (v) this.checkedValue = v;
+        if (v !== undefined) this.checkedValue = v;
         this.message = "";
     }
 }
@@ -51,9 +50,14 @@ class ReferentialIntegrityConstraintViolation extends ConstraintViolation {
         super( msg);
     }
 }
+class FrozenValueConstraintViolation extends ConstraintViolation {
+    constructor (msg) {
+        super( msg);
+    }
+}
 
 export { ConstraintViolation, NoConstraintViolation,
     MandatoryValueConstraintViolation, RangeConstraintViolation,
     StringLengthConstraintViolation, IntervalConstraintViolation,
     PatternConstraintViolation, UniquenessConstraintViolation,
-    ReferentialIntegrityConstraintViolation };
+    ReferentialIntegrityConstraintViolation, FrozenValueConstraintViolation };
