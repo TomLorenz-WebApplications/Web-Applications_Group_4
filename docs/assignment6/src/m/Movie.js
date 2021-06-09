@@ -319,9 +319,9 @@ class Movie {
     } else if (cat !== MovieCategoryEL.TVSERIESEPISODE && a) {
       return new ConstraintViolation("An 'episodeNo' field value must not " +
         "be provided if the movie is not a tvseriesepisode!");
-    } else if (typeof (a) != "number" || a === "" || a < 1 || isNaN(a)) {
+    } else if (typeof (a) != "number" || a == "" || a < 1 || isNaN(a)) {
       return new RangeConstraintViolation(
-        "The 'episodeNo' field value must be a non-empty string!");
+        "The 'episodeNo' field value must be a positive number!");
     } else {
       return new NoConstraintViolation();
     }
